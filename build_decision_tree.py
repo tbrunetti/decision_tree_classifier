@@ -1,3 +1,4 @@
+from time import gmtime, strftime
 import argparse
 import numpy as np
 from sklearn import tree, metrics
@@ -12,8 +13,11 @@ import sys
 
 
 #def build_decision_tree(data, prediction):
-def build_decision_tree(input, outcome):
+def build_decision_tree(input, outcome, **kwargs):
 
+	# files to keep results and run information
+	output_results = open(str(kwargs['name']) + '_metrics.txt', 'w')
+	
 	# read and store data
 	data = pandas.read_csv(input, delimiter=',', header=0)
 	ground_truth = data.loc[:, str(outcome)] # store true outcomes
@@ -30,10 +34,10 @@ def build_decision_tree(input, outcome):
 	# setting a random state ensures data is split exact same way everytime alg is run assuming input
 	# data is the same
 	data_training, data_test, outcome_training, outcome_test = train_test_split(
-		data, ground_truth, test_size=args.pct_test, random_state=args.seed)
+		data, ground_truth, test_size=kwargs['pct_test'], random_state=kwargs['seed'])
 
 	# build classifier using training data
-	tree_classifier = tree.DecisionTreeClassifier(min_samples_leaf=args.min_samples, max_depth=args.depth, criterion=args.split)
+	tree_classifier = tree.DecisionTreeClassifier(min_samples_leaf=kwargs['min_samples'], max_depth=kwargs['depth'], criterion=kwargs['split'])
 	tree_classifier = tree_classifier.fit(data_training, outcome_training)
 
 	# have classifier predict class of test data and store prediction in predicted_outcome
@@ -41,7 +45,7 @@ def build_decision_tree(input, outcome):
 	dot_data = StringIO()
 	tree.export_graphviz(tree_classifier, out_file=dot_data, impurity=True, filled=True, rounded=True, feature_names=column_names)
 	graph = pydotplus.graph_from_dot_data(dot_data.getvalue())
-	graph.write_pdf(str(args.name) + '_decision_tree_path' + '.pdf')
+	graph.write_pdf(str(kwargs['name']) + '_decision_tree_path' + '.pdf')
 
 	# use test set to determine how well classifier performs
 	test_score = tree_classifier.score(data_test, outcome_test)
@@ -50,8 +54,8 @@ def build_decision_tree(input, outcome):
 	output_results.write("The accuracy of the classifier using the test set is " + str(acc)+'\n')
 	
 	# create list of class names
-	if args.class_names != None:
-		class_names = args.class_names.split(',')
+	if kwargs['class_names'] != None:
+		class_names = kwargs['class_names'].split(',')
 	else:
 		class_names = [str(x) for x in list(set(ground_truth.flat))]
 	
@@ -78,18 +82,20 @@ def build_decision_tree(input, outcome):
 
 	# write out statistics precision, recall, f1-score, support
 	output_results.write(str(metrics.classification_report(outcome_test, predicted_test_outcome, target_names=class_names)) + '\n')
-		
+	output_results.close()
 	return data, ground_truth, tree_classifier, data_training, data_test, outcome_training, outcome_test
 
 
-def model_cross_validation(input, outcome):
+def model_cross_validation(input, outcome, **kwargs):
+	output_results = open(str(kwargs['name']) + '_metrics.txt', 'a+')
 	
 	output_results.write('------------------CROSS-VALIDATION OF MODEL--------------------' + '\n')
 	
 	# builds new tree with all data using cross-validation
-	make_tree = tree.DecisionTreeClassifier(min_samples_leaf=args.min_samples, max_depth=args.depth, criterion=args.split)
-	cv_scores = cross_val_score(make_tree, input, outcome, cv=args.cross_val, scoring=args.score_method)
+	make_tree = tree.DecisionTreeClassifier(min_samples_leaf=kwargs['min_samples'], max_depth=kwargs['depth'], criterion=kwargs['split'])
+	cv_scores = cross_val_score(make_tree, input, outcome, cv=kwargs['cross_val'], scoring=kwargs['score_method'])
 	
 	# write results of cross-validation both individual and mean scores
-	output_results.write(str(args.cross_val) + '-fold cross-validation scores:' + '\n' + str(cv_scores) + '\n')
+	output_results.write(str(kwargs['cross_val']) + '-fold cross-validation scores:' + '\n' + str(cv_scores) + '\n')
 	output_results.write('The mean cross-validation score is:' + '\t' + str(cv_scores.mean()))
+	output_results.close()
