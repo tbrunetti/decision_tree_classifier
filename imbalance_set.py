@@ -21,7 +21,9 @@ def smotetomek(input, outcome):
 
 
 # return ratio of imbalance in data set
-def check_imbalance(input, outcome):
+def check_imbalance(input, outcome, **kwargs):
+	output_results = open(str(kwargs['name']) + '_metrics.txt', 'a+')
+
 	# read and store data
 	data = pandas.read_csv(input, delimiter=',', header=0)
 	freq = data[outcome].value_counts()
@@ -29,10 +31,13 @@ def check_imbalance(input, outcome):
 	total_obs = sum(freq)
 	
 	for i in outcome_class:
-		print 'There are ' + str(freq[i]) + " samples in class " + str(i) +' (' + str(((float(freq[i])/float(total_obs))*100.0)) + '%)'
+		output_results.write('There are ' + str(freq[i]) + " samples in class " + str(i) +' (' + str(((float(freq[i])/float(total_obs))*100.0)) + '%)' + '\n')
 	
 	
-def manage_imbalance(input, outcome, method):
+def manage_imbalance(input, outcome, method, **kwargs):
+	
+	output_results = open(str(kwargs['name']) + '_metrics.txt', 'a+')
+
 	# read and store data
 	data = pandas.read_csv(input, delimiter=',', header=0)
 	ground_truth = data.loc[:, str(outcome)] # store true outcomes
@@ -47,19 +52,8 @@ def manage_imbalance(input, outcome, method):
 
 	if method == 'SMOTETomek_option':
 		data_resampled, ground_truth_resampled = smotetomek(input=data, outcome=ground_truth)
-		print 'The data set has the following distribution post-balancing:'
+		output_results.write('The data set has the following distribution post-balancing:'+'\n')
 		for key in Counter(ground_truth_resampled):
-			print 'There are ' + str(Counter(ground_truth_resampled)[key]) + " samples in the balanced class " + str(key) +' (' + str(((float(Counter(ground_truth_resampled)[key])/float(len(ground_truth_resampled)))*100.0)) + '%)'
+			output_results.write('There are ' + str(Counter(ground_truth_resampled)[key]) + " samples in the balanced class " + str(key) +' (' + str(((float(Counter(ground_truth_resampled)[key])/float(len(ground_truth_resampled)))*100.0)) + '%)' +'\n')
 
-		return data_resampled, ground_truth_resampled
-
-
-if __name__ == '__main__':
-	parser=argparse.ArgumentParser("Cleans data and builds and trains decision tree")
-	parser.add_argument('-dataInput', required=True, dest='matrixFile', help='Full path to comma-delimited "matrix" file')
-	parser.add_argument('-predictColumn', required=True, dest='target_outcome', help='Exact column name in dataset to be used as predicted outcome')
-	parser.add_argument('--balance_method', default='SMOTETomek_option', dest='balance_method', help='method for balancing data set')
-	args=parser.parse_args()
-
-	check_imbalance(input=args.matrixFile, outcome=args.target_outcome)
-	data_resampled, ground_truth_resampled = manage_imbalance(input=args.matrixFile, outcome=args.target_outcome, method=args.balance_method)
+	return data_resampled, ground_truth_resampled, column_names
