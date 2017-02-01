@@ -1,4 +1,5 @@
 from time import gmtime, strftime
+from collections import Counter
 import argparse
 import numpy as np
 from sklearn import tree, metrics
@@ -13,22 +14,27 @@ import sys
 
 
 #def build_decision_tree(data, prediction):
-def build_decision_tree(input, outcome, **kwargs):
-
+def build_decision_tree(input, outcome, method, cols, **kwargs):
 	# files to keep results and run information
-	output_results = open(str(kwargs['name']) + '_metrics.txt', 'w')
+	output_results = open(str(kwargs['name']) + '_metrics.txt', 'a+')
 	
-	# read and store data
-	data = pandas.read_csv(input, delimiter=',', header=0)
-	ground_truth = data.loc[:, str(outcome)] # store true outcomes
+	if method==None:
+		# read and store data
+		data = pandas.read_csv(input, delimiter=',', header=0)
+		ground_truth = data.loc[:, str(outcome)] # store true outcomes
 	
-	# remove predictor variable from dataset
-	data.drop(str(outcome), axis=1, inplace=True)
-	column_names = list(data) # extract header information
+		# remove predictor variable from dataset
+		data.drop(str(outcome), axis=1, inplace=True)
+		column_names = list(data) # extract header information
 	
-	# convert to numpy arrays
-	data = data.as_matrix()
-	ground_truth = ground_truth.as_matrix()
+		# convert to numpy arrays
+		data = data.as_matrix()
+		ground_truth = ground_truth.as_matrix()
+
+	else:
+		data = input
+		ground_truth = outcome
+		column_names = cols
 
 	# split data into training and test set
 	# setting a random state ensures data is split exact same way everytime alg is run assuming input
@@ -50,6 +56,8 @@ def build_decision_tree(input, outcome, **kwargs):
 	# use test set to determine how well classifier performs
 	test_score = tree_classifier.score(data_test, outcome_test)
 	acc = metrics.accuracy_score(outcome_test, predicted_test_outcome)
+	output_results.write("The ratio of samples used in the training set is " + str(Counter(outcome_training)) +'\n')
+	output_results.write("The ratio of samples used in the test case is " + str(Counter(outcome_test)) +'\n') 
 	output_results.write("The score of the classifer using the test set is " + str(test_score)+'\n')
 	output_results.write("The accuracy of the classifier using the test set is " + str(acc)+'\n')
 	
@@ -82,10 +90,18 @@ def build_decision_tree(input, outcome, **kwargs):
 
 	# write out statistics precision, recall, f1-score, support
 	output_results.write(str(metrics.classification_report(outcome_test, predicted_test_outcome, target_names=class_names)) + '\n')
+	
+	build_full = tree.DecisionTreeClassifier(min_samples_leaf=kwargs['min_samples'], max_depth=kwargs['depth'], criterion=kwargs['split'])
+	build_full = tree_classifier.fit(data, ground_truth)
+	dot_data = StringIO()
+	tree.export_graphviz(build_full, out_file=dot_data, impurity=True, filled=True, rounded=True, feature_names=column_names)
+	graph = pydotplus.graph_from_dot_data(dot_data.getvalue())
+	graph.write_pdf(str(kwargs['name']) + '_full_dataset_decision_tree_path' + '.pdf')
+
 	output_results.close()
 	return data, ground_truth, tree_classifier, data_training, data_test, outcome_training, outcome_test
 
-
+# qualifies the use of decision tree model
 def model_cross_validation(input, outcome, **kwargs):
 	output_results = open(str(kwargs['name']) + '_metrics.txt', 'a+')
 	
