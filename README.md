@@ -23,7 +23,8 @@ In progress
 
 ###Installation and Configuration
 ----------------------------------
-It is critical that all the above listed software requirements are met and are in your Python path.  Most of the requirements can easily be installed using pip:```
+It is critical that all the above listed software requirements are met and are in your Python path.  Most of the requirements can easily be installed using pip:
+```
 python -m pip install --upgrade pip
 pip install --user numpy scipy matplotlib ipython jupyter pandas sympy nose
 pip install -U scikit-learn
