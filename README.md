@@ -7,7 +7,7 @@ In progress
 ###Software Requirements
 -------------------------
 * Python minimum version requirement 2.7.6
-* Python scikit-learn version >=  0.18.0 (scikit-learn.org/stable)
+* Python scikit-learn version >=  0.18.0 (https://scikit-learn.org/stable)
 * imbalanced-learn version >= 0.2.1 (https://pypi.python.org/pypi/imbalanced-learn)
 * SciPy libraries (https://scipy.org)
   * Pandas version >= 0.19.2
@@ -15,7 +15,7 @@ In progress
   * Matplotlib version >= 2.0.0
 * Pydotplus version >= 2.0.2 (https://pypi.python.org/pypi/pydotplus)
 * Graphviz (http://www.graphviz.org)
-* graphviz for Python version >= 0.5.2
+* graphviz for Python version >= 0.5.2 (https://pypi.python.org/pypi/graphviz)
 
 ###User Input Requirements
 ---------------------------
