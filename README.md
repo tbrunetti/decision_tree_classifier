@@ -7,7 +7,7 @@ In progress
 ###Software Requirements
 -------------------------
 * Python minimum version requirement 2.7.6
-* Python scikit-learn version >=  0.18.0 (https://scikit-learn.org/stable)
+* Python scikit-learn version >=  0.18.0 (http://scikit-learn.org/stable)
 * imbalanced-learn version >= 0.2.1 (https://pypi.python.org/pypi/imbalanced-learn)
 * SciPy libraries (https://scipy.org)
   * Pandas version >= 0.19.2
