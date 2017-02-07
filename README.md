@@ -23,14 +23,14 @@ In progress
 
 ###Installation and Configuration
 ----------------------------------
-It is critical that all the above listed software requirements are met and are in your Python path.  Most of the requirements can easily be installed using pip:'''
+It is critical that all the above listed software requirements are met and are in your Python path.  Most of the requirements can easily be installed using pip:```
 python -m pip install --upgrade pip
 pip install --user numpy scipy matplotlib ipython jupyter pandas sympy nose
 pip install -U scikit-learn
 pip install -U imbalanced-learn
 pip install pydotplus
 pip install graphviz
-'''
+```
 The only software that may be more difficult to install is Graphviz from http://www.graphviz.org.  Download the appropriate package for your system and follow the build instructions pertaining to your OS.  Make sure it is visible or within your Python path.
  
 
