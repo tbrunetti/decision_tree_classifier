@@ -1,5 +1,9 @@
 # decision_tree_classifier
-In progress
+In progress:
+* data_formatting.py
+* missing_data_calculations.py
+* other methods for balancing data
+
 ###Overview
 -----------
 ![Alt text](https://github.com/tbrunetti/decision_tree_classifier/blob/master/pipeline_overview.jpg)
@@ -65,7 +69,8 @@ It is important to note that although the minimum command above will build a dec
 * **--seed**  this can be set to any integer.  This ensures that the data is split in the same exact way each time to reproduce the same results.  If this parameter is not set, the default is None.  This means every time the program is run a different tree or outcome may result.
 * **--cross****_****val** this is an integer that is used to determine the k-fold cross validation for the model.  The default is 10.  i.e. The data is split into 10 parts, and each iteration 1 part is reserved for validation and the remaining 9 parts are used to train.  This is repeated 10 times until each part has been reserved and tested for validation.
 * **--scoring** the method to indicate how the cross-validation should be scored.  Default is accuracy.  For all possible options see sklearn.model_selection
-* **--balance****_****method**  If the data being used is not balanced in terms of equal occurences of the predicted outcome, the user can choose to balance the data set.  The default is None, meaning no balancing will occur.  The other option is to type in SMOTETomek_option.  This will attempt to balance the dataset by oversampling the minority group and undersampling the majority group.  Oversampling will try to cluster the imbalanced group and add artificial samples that carry attributes of the minority cluster and add it to the dataset.  Other options to become available in the future.
+* **--balance****_****method**  If the data being used is not balanced in terms of equal occurences of the predicted outcome, the user can choose to balance the data set.  The default is None, meaning no balancing will occur.  The other option is to type in SMOTETomek_option.  This will attempt to balance the dataset by oversampling the minority group and undersampling the majority group.  Oversampling will try to cluster the imbalanced group and add artificial samples that carry attributes of the minority cluster and add it to the dataset.  Other options to become available in the future.  
+
 For a quick help guide for all user options run the following command:
 ```
 python run_build_and_predict.py -h
@@ -76,4 +81,10 @@ There are a total of **4 files** that result from running the program:
 * decision_tree_path.pdf
 * full_dataset_decision_tree_path.pdf
 * metrics.txt
-* run_parameters.txt
+* run_parameters.txt  
+
+The two PDF files are illustrations of the decision tree.  The full_dataset_decision_tree is probably a little overfit as it uses the entire dataset.  I would recommend using decision_tree_path.pdf.  
+
+metrics.txt give run statistics such as balancing, accuracy, cross-validation results, model accuracy, etc...  
+
+run_parameters.txt give the user all the parameters and flags that were set
