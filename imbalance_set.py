@@ -19,6 +19,12 @@ def smotetomek(input, outcome):
 	data_resampled, ground_truth_resampled = smotetomek.fit_sample(input, outcome)
 	return data_resampled, ground_truth_resampled
 
+def smote_enn(input, outcome):
+	# create SMOTE ENN resampling object
+	smoteenn = SMOTESENN()
+	data_resampled, ground_truth_resampled = smoteenn.fit_sample(input, outcome)
+	return data_resampled, ground_truth_resampled
+
 
 # return ratio of imbalance in data set
 def check_imbalance(input, outcome, **kwargs):
@@ -53,7 +59,16 @@ def manage_imbalance(input, outcome, method, **kwargs):
 	if method == 'SMOTETomek_option':
 		data_resampled, ground_truth_resampled = smotetomek(input=data, outcome=ground_truth)
 		output_results.write('The data set has the following distribution post-balancing:'+'\n')
+		output_results.write('method of balancing:  SMOTE for underbalancing and Tomek Links for cleaning/undersampling' + '\n')
 		for key in Counter(ground_truth_resampled):
 			output_results.write('There are ' + str(Counter(ground_truth_resampled)[key]) + " samples in the balanced class " + str(key) +' (' + str(((float(Counter(ground_truth_resampled)[key])/float(len(ground_truth_resampled)))*100.0)) + '%)' +'\n')
+
+	elif method == 'SMOTE_ENN_option':
+		data_resampled, ground_truth_resampled = smote_enn(input=data, outcome=ground_truth)
+		output_results.write('The data set has the following distrubtion post-balancing:' + '\n')
+		output_results.write('method of balancing:  SMOTE for underbalancing and edited nearest neighbors (ENN) for oversampling' + '\n')
+		for key in Counter(ground_truth_resampled):
+			output_results.write('There are ' + str(Counter(ground_truth_resampled)[key]) + " samples in the balanced class " + str(key) +' (' + str(((float(Counter(ground_truth_resampled)[key])/float(len(ground_truth_resampled)))*100.0)) + '%)' +'\n')
+
 
 	return data_resampled, ground_truth_resampled, column_names

@@ -38,7 +38,7 @@ if __name__ == '__main__':
 	parser.add_argument('--seed', default=None, dest='seed', type=int, help='[INT] set seed to ensure data is split the same way every run, assuming no changes in input, default=0')
 	parser.add_argument('--cross_val', default=10, dest='cross_val', type=int, help='[INT] for k-fold cross validation of model use, default=10')
 	parser.add_argument('--scoring', default='accuracy', dest='score_method', help='sting indicating how cross validation should be scored, default=accuracy (see sklearn.model_selection)' )
-	parser.add_argument('--balance_method', default=None, dest='balance', help='method for balancing data set')
+	parser.add_argument('--balance_method', default=None, dest='balance', help='method for balancing data set, for all options please see README.txt')
 	args = parser.parse_args()
 	kwargs = vars(args)
 	run(**kwargs)
