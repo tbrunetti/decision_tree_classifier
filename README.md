@@ -10,7 +10,7 @@ In progress:
 
 ###Software Requirements
 -------------------------
-* Python minimum version requirement 2.7.6
+* Python minimum version requirement 2.7.6 (not currently support on Python 3.0 and greater)
 * Python scikit-learn version >=  0.18.0 (http://scikit-learn.org/stable)
 * imbalanced-learn version >= 0.2.1 (https://pypi.python.org/pypi/imbalanced-learn)
 * SciPy libraries (https://scipy.org)
